@@ -1,0 +1,21 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Force LF for shell scripts and workflows
+*.sh text eol=lf
+*.bash text eol=lf
+.github/**/*.yml text eol=lf
+.github/**/*.yaml text eol=lf
+
+# Force CRLF for Windows batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.icns binary
+*.pdf binary
+*.zip binary

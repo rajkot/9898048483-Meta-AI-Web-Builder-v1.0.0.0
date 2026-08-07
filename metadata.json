@@ -1,0 +1,6 @@
+{
+  "name": "Meta-AI Web Builder",
+  "description": "Multi-stage interactive AI web application builder with strategy engine, domain collector, master spec architect, code generator execution engine, live sandbox preview, and Google Drive auto-sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

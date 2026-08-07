@@ -1,0 +1,29 @@
+{
+  "appId": "com.metaai.webbuilder",
+  "productName": "Meta-AI Web Builder",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "dist/**/*",
+    "electron-main.js",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      "exe",
+      "zip"
+    ]
+  },
+  "mac": {
+    "target": [
+      "dmg",
+      "zip"
+    ]
+  },
+  "linux": {
+    "target": [
+      "AppImage"
+    ]
+  }
+}
