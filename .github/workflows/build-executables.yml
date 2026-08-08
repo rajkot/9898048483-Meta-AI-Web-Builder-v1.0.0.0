@@ -78,14 +78,14 @@ jobs:
             "productName": "Meta-AI-Builder",
             "directories": { "output": "release-builds" },
             "files": ["dist/**/*", "electron-main.js", "package.json"],
-            "win": { "target": ["zip", "portable"] },
+            "win": { "target": ["portable", "zip"] },
             "mac": {
               "target": ["dmg", "zip"],
               "identity": null,
               "hardenedRuntime": false,
               "gatekeeperAssess": false
             },
-            "linux": { "target": ["AppImage"] }
+            "linux": { "target": ["AppImage", "tar.gz"] }
           }
           EOF
 
@@ -95,11 +95,11 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            npx electron-builder --win --config electron-builder.json
+            npx electron-builder --win --config electron-builder.json -c.mac.identity=null
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            npx electron-builder --mac --config electron-builder.json
+            npx electron-builder --mac --config electron-builder.json -c.mac.identity=null
           else
-            npx electron-builder --linux --config electron-builder.json
+            npx electron-builder --linux --config electron-builder.json -c.mac.identity=null
           fi
 
       - name: Upload Desktop Binaries
@@ -136,6 +136,7 @@ jobs:
 
       - name: Scaffold Android Capacitor Platform
         run: |
+          npx cap init MetaAIBuilder com.metaai.builder --web-dir dist || true
           if [ ! -d "android" ]; then
             npx cap add android
           fi

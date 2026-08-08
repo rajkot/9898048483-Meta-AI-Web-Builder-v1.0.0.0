@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MetaAIBuilder</string>
+    <string name="title_activity_main">MetaAIBuilder</string>
+    <string name="package_name">com.metaai.builder</string>
+    <string name="custom_url_scheme">com.metaai.builder</string>
+</resources>
