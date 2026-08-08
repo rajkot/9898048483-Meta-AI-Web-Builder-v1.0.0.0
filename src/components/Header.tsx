@@ -12,6 +12,7 @@ import {
   Trash2,
   PlusCircle,
   ChevronDown,
+  Github,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -26,6 +27,7 @@ interface HeaderProps {
   onNewProject: () => void;
   onOpenExtensionModal?: () => void;
   onOpenHowItWorks?: () => void;
+  onOpenGitHubExport?: () => void;
 }
 
 export const stages: Array<{ id: StageId; number: number; label: string; agent: string; icon: React.ComponentType<{ className?: string }> }> = [
@@ -48,6 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNewProject,
   onOpenExtensionModal,
   onOpenHowItWorks,
+  onOpenGitHubExport,
 }) => {
   const [isDraftsOpen, setIsDraftsOpen] = useState(false);
 
@@ -110,6 +113,19 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls & Draft History Dropdown */}
         <div className="flex items-center gap-3">
+          {/* GitHub Export Button */}
+          {onOpenGitHubExport && (
+            <button
+              type="button"
+              onClick={onOpenGitHubExport}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+              title="GitHub Export Facility"
+            >
+              <Github className="w-3.5 h-3.5 text-white" />
+              <span className="hidden sm:inline">GitHub Export</span>
+            </button>
+          )}
+
           {/* How to Use (Zero-API) Guide Button */}
           {onOpenHowItWorks && (
             <button

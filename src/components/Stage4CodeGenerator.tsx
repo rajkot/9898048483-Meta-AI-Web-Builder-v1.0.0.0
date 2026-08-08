@@ -25,9 +25,13 @@ import {
   Square,
   Cpu,
   Box,
+  Github,
 } from 'lucide-react';
 import { generateStage4ChatGPTCodePrompt, extractAndParseJSON } from '../utils/promptGenerators';
 import { injectExecutableConfigs, TargetOSOptions } from '../utils/executableConfigInjector';
+import { ProjectDashboard } from './ProjectDashboard';
+import { GitHubExportModal } from './GitHubExportModal';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface Stage4CodeGeneratorProps {
   userPrompt: string;
@@ -57,6 +61,7 @@ export const Stage4CodeGenerator: React.FC<Stage4CodeGeneratorProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [isZipping, setIsZipping] = useState<boolean>(false);
+  const [isGitHubModalOpen, setIsGitHubModalOpen] = useState<boolean>(false);
   const [fileContents, setFileContents] = useState<Record<string, string>>({});
   const [pastedResponse, setPastedResponse] = useState<string>('');
   const [promptCopied, setPromptCopied] = useState<boolean>(false);
@@ -430,12 +435,20 @@ Strategy: ${selectedStrategy?.name}
         {project && (
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button
+              onClick={() => setIsGitHubModalOpen(true)}
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-md"
+            >
+              <Github className="w-4 h-4 text-white" />
+              <span>GitHub Export Facility</span>
+            </button>
+
+            <button
               onClick={handleDownloadZip}
               disabled={isZipping}
               className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-md shadow-indigo-600/20"
             >
               <Download className="w-3.5 h-3.5" />
-              {isZipping ? 'Archiving Suite...' : 'Export Cross-Platform Suite (.zip)'}
+              {isZipping ? 'Archiving Suite...' : 'Export Suite (.zip)'}
             </button>
 
             <button
@@ -702,6 +715,21 @@ Strategy: ${selectedStrategy?.name}
         </div>
       </div>
 
+      {/* Project Complexity & Analytics Dashboard when Project exists */}
+      <AnimatePresence mode="wait">
+        {project && (
+          <motion.div
+            key={project.projectName || 'project-dashboard'}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.97 }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+          >
+            <ProjectDashboard project={project} fileContents={fileContents} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Code Workbench Grid when Project exists */}
       {project && (
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-12 min-h-[600px] pt-2">
@@ -828,6 +856,14 @@ Strategy: ${selectedStrategy?.name}
           </div>
         </div>
       )}
+
+      {/* GitHub Export Modal */}
+      <GitHubExportModal
+        isOpen={isGitHubModalOpen}
+        onClose={() => setIsGitHubModalOpen(false)}
+        project={project}
+        fileContents={fileContents}
+      />
     </div>
   );
 };

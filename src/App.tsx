@@ -7,6 +7,7 @@ import { Stage4CodeGenerator } from './components/Stage4CodeGenerator';
 import { Stage5DriveSync } from './components/Stage5DriveSync';
 import { ChromeExtensionModal } from './components/ChromeExtensionModal';
 import { HowItWorksModal } from './components/HowItWorksModal';
+import { GitHubExportModal } from './components/GitHubExportModal';
 import {
   DomainAnswers,
   DomainQuestion,
@@ -54,6 +55,7 @@ export default function App() {
 
   const [isExtModalOpen, setIsExtModalOpen] = useState<boolean>(false);
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState<boolean>(false);
+  const [isGitHubModalOpen, setIsGitHubModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [extensionNotice, setExtensionNotice] = useState<string | null>(null);
 
@@ -290,6 +292,7 @@ export default function App() {
         onNewProject={handleResetAll}
         onOpenExtensionModal={() => setIsExtModalOpen(true)}
         onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
+        onOpenGitHubExport={() => setIsGitHubModalOpen(true)}
       />
 
       {/* Main App Container */}
@@ -484,6 +487,13 @@ export default function App() {
         isOpen={isHowItWorksOpen}
         onClose={() => setIsHowItWorksOpen(false)}
         onOpenExtensionModal={() => setIsExtModalOpen(true)}
+      />
+
+      {/* GitHub Export Modal */}
+      <GitHubExportModal
+        isOpen={isGitHubModalOpen}
+        onClose={() => setIsGitHubModalOpen(false)}
+        project={project}
       />
 
       {/* Footer */}
