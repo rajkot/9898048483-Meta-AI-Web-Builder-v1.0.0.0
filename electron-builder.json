@@ -11,6 +11,7 @@
   ],
   "npmRebuild": false,
   "nodeGypRebuild": false,
+  "publish": null,
   "win": {
     "target": ["portable", "zip"],
     "cscLink": null
