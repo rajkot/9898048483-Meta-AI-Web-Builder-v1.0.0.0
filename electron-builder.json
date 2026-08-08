@@ -7,19 +7,20 @@
   "files": [
     "dist/**/*",
     "electron-main.cjs",
-    "electron-main.js",
     "package.json"
   ],
+  "npmRebuild": false,
+  "nodeGypRebuild": false,
   "win": {
     "target": ["portable", "zip"]
   },
   "mac": {
-    "target": ["dmg", "zip"],
+    "target": ["zip", "dmg"],
     "identity": null,
     "hardenedRuntime": false,
     "gatekeeperAssess": false
   },
   "linux": {
-    "target": ["zip", "tar.gz", "AppImage"]
+    "target": ["tar.gz", "zip", "AppImage"]
   }
 }

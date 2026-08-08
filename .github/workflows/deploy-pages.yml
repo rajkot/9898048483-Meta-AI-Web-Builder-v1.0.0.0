@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout Repository
@@ -45,7 +48,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           single-commit: true
 
-      - name: Setup GitHub Pages Artifact
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
         continue-on-error: true
 
@@ -55,7 +58,7 @@ jobs:
         with:
           path: './dist'
 
-      - name: Deploy to GitHub Pages (Actions)
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
