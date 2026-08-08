@@ -1,29 +1,25 @@
 {
   "appId": "com.metaai.webbuilder",
-  "productName": "Meta-AI Web Builder",
+  "productName": "Meta-AI-Web-Builder",
   "directories": {
-    "output": "dist-electron"
+    "output": "release-builds"
   },
   "files": [
     "dist/**/*",
+    "electron-main.cjs",
     "electron-main.js",
     "package.json"
   ],
   "win": {
-    "target": [
-      "exe",
-      "zip"
-    ]
+    "target": ["portable", "zip"]
   },
   "mac": {
-    "target": [
-      "dmg",
-      "zip"
-    ]
+    "target": ["dmg", "zip"],
+    "identity": null,
+    "hardenedRuntime": false,
+    "gatekeeperAssess": false
   },
   "linux": {
-    "target": [
-      "AppImage"
-    ]
+    "target": ["zip", "tar.gz", "AppImage"]
   }
 }
