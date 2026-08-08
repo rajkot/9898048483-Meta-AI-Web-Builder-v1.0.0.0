@@ -16,12 +16,12 @@
     "cscLink": null
   },
   "mac": {
-    "target": ["zip"],
+    "target": ["dmg", "zip"],
     "identity": null,
     "hardenedRuntime": false,
     "gatekeeperAssess": false
   },
   "linux": {
-    "target": ["zip", "tar.gz"]
+    "target": ["zip", "tar.gz", "AppImage"]
   }
 }
