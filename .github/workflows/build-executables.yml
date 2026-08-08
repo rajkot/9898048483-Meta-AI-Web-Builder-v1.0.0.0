@@ -26,10 +26,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Linux System Dependencies
         if: matrix.os == 'ubuntu-latest'
@@ -80,11 +80,9 @@ jobs:
             "files": ["dist/**/*", "electron-main.cjs", "package.json"],
             "npmRebuild": false,
             "nodeGypRebuild": false,
-            "publish": null,
-            "win": { "target": ["portable", "zip"], "cscLink": null },
+            "win": { "target": ["portable", "zip"] },
             "mac": {
               "target": ["dmg", "zip"],
-              "identity": null,
               "hardenedRuntime": false,
               "gatekeeperAssess": false
             },
@@ -104,9 +102,9 @@ jobs:
           GITHUB_TOKEN: ""
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            npx electron-builder --win --config electron-builder.json --publish never -c.win.cscLink=null
+            npx electron-builder --win --config electron-builder.json --publish never
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            npx electron-builder --mac --config electron-builder.json --publish never -c.mac.identity=null -c.mac.hardenedRuntime=false
+            npx electron-builder --mac --config electron-builder.json --publish never
           else
             npx electron-builder --linux --config electron-builder.json --publish never
           fi
@@ -127,15 +125,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Node Dependencies
         run: npm install --legacy-peer-deps

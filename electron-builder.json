@@ -11,14 +11,11 @@
   ],
   "npmRebuild": false,
   "nodeGypRebuild": false,
-  "publish": null,
   "win": {
-    "target": ["portable", "zip"],
-    "cscLink": null
+    "target": ["portable", "zip"]
   },
   "mac": {
     "target": ["dmg", "zip"],
-    "identity": null,
     "hardenedRuntime": false,
     "gatekeeperAssess": false
   },
