@@ -67,10 +67,13 @@ export default function App() {
 
   // Auto-Save Active Draft when Key States Change
   useEffect(() => {
-    const draftId = activeDraftId || `draft-${Date.now()}`;
-    if (!activeDraftId) setActiveDraftId(draftId);
+    let draftId = activeDraftId;
+    if (!draftId) {
+      draftId = `draft-${Date.now()}`;
+      setActiveDraftId(draftId);
+    }
 
-    const draft = saveProjectDraft({
+    saveProjectDraft({
       id: draftId,
       title: project?.projectName || selectedStrategy?.name || 'Meta-AI App',
       projectName: project?.projectName || selectedStrategy?.name || 'Meta-AI App',
@@ -90,9 +93,11 @@ export default function App() {
 
     setSavedDrafts(loadSavedDrafts());
   }, [
+    activeDraftId,
     userPrompt,
     targetStack,
     currentStage,
+    completedStages,
     strategyBreakdown,
     selectedStrategy,
     domainQuestions,
@@ -278,7 +283,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased">
+    <div className="min-h-screen max-w-full bg-slate-950 text-slate-100 flex flex-col font-sans antialiased overflow-x-hidden">
       {/* Top Header & Pipeline Stepper */}
       <Header
         currentStage={currentStage}
@@ -495,6 +500,44 @@ export default function App() {
         onClose={() => setIsGitHubModalOpen(false)}
         project={project}
       />
+
+      {/* Pro Services & Store Bar */}
+      <div className="w-full bg-slate-900/90 border-t border-slate-800 py-6 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-center md:text-left">
+            <h4 className="text-sm font-bold text-slate-200 flex items-center justify-center md:justify-start gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              Meta-AI Pro Ecosystem & Support
+            </h4>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Connect directly for custom appointments, donations, or official digital products.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => window.open('https://wa.me/919898048483', '_blank')}
+              className="pro-btn btn-buy-pro px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-900/30 border border-emerald-400/30 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+            >
+              <span>⚡</span> BUY NOW PRO (APPOINTMENT)
+            </button>
+
+            <button
+              onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLScJ7WjuxEXqdoSlUtxN7NQ8UeKpbEAeA9iIO-IXOmBmYzlLHQ/viewform?usp=sharing&ouid=116676179363878319046', '_blank')}
+              className="pro-btn btn-donate px-4 py-2.5 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-900/30 border border-amber-400/30 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+            >
+              <span>🪙</span> DONATION SYSTEM
+            </button>
+
+            <button
+              onClick={() => window.open('https://wa.me/c/919898048483', '_blank')}
+              className="pro-btn btn-store px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-indigo-900/30 border border-indigo-400/30 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+            >
+              <span>🛒</span> OFFICIAL DIGITAL STORE
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500 flex flex-wrap items-center justify-between gap-2 max-w-7xl mx-auto w-full">
