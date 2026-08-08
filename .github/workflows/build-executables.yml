@@ -30,12 +30,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Linux Dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y fuse libfuse2 desktop-file-utils libgtk-3-dev
+          sudo apt-get install -y fuse libfuse2 libfuse2t64 desktop-file-utils libgtk-3-dev || sudo apt-get install -y fuse libfuse2 desktop-file-utils libgtk-3-dev
 
       - name: Install Node Dependencies
         run: npm install --legacy-peer-deps
@@ -50,8 +51,8 @@ jobs:
           const fs = require('fs');
           const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
           pkg.main = 'electron-main.js';
-          pkg.author = pkg.author || 'Meta-AI';
-          pkg.description = pkg.description || 'Meta-AI Web Builder App';
+          pkg.author = pkg.author || 'Meta-AI Builder';
+          pkg.description = pkg.description || 'Meta-AI Web Builder Cross-Platform Application';
           fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
           "
 
@@ -79,16 +80,20 @@ jobs:
             "directories": { "output": "release-builds" },
             "files": ["dist/**/*", "electron-main.js", "package.json"],
             "win": { "target": ["zip", "portable"] },
-            "mac": { "target": ["dmg", "zip"] },
+            "mac": {
+              "target": ["dmg", "zip"],
+              "identity": null,
+              "hardenedRuntime": false,
+              "gatekeeperAssess": false
+            },
             "linux": { "target": ["AppImage"] }
           }
           EOF
 
-      - name: Install Electron Builder CLI
-        run: npm install --no-save electron@30.0.0 electron-builder@24.13.3
-
       - name: Compile Desktop Executables
         shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
             npx electron-builder --win --config electron-builder.json
@@ -123,6 +128,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Node Dependencies
         run: npm install --legacy-peer-deps
@@ -130,21 +136,20 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
-      - name: Auto-Scaffold Android Project if Missing
+      - name: Scaffold Android Capacitor Platform
         run: |
           if [ ! -d "android" ]; then
-            npx cap init MetaAIBuilder com.metaai.builder --web-dir dist
-            npm install @capacitor/core @capacitor/cli @capacitor/android
             npx cap add android
           fi
-          npx cap sync android || true
+          npx cap copy android
+          npx cap sync android
 
       - name: Compile Android Debug APK
         run: |
           if [ -d "android" ]; then
             cd android
             chmod +x gradlew
-            ./gradlew assembleDebug
+            ./gradlew assembleDebug --no-daemon
           fi
 
       - name: Upload Android APK

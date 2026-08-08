@@ -7,6 +7,12 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
@@ -20,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Node Dependencies
         run: npm install --legacy-peer-deps
@@ -27,7 +34,29 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
-      - name: Deploy to GitHub Pages
+      - name: Create .nojekyll file
+        run: touch dist/.nojekyll
+
+      - name: Deploy to gh-pages branch
         uses: JamesIves/github-pages-deploy-action@v4
+        continue-on-error: true
         with:
           folder: dist
+          branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          single-commit: true
+
+      - name: Setup GitHub Pages Artifact
+        uses: actions/configure-pages@v5
+        continue-on-error: true
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages (Actions)
+        id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
