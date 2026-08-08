@@ -31,12 +31,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Linux Dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fuse libfuse2 desktop-file-utils libgtk-3-dev || true
-
       - name: Install Node Dependencies
         run: npm install --legacy-peer-deps
 
@@ -75,19 +69,19 @@ jobs:
           cat << 'EOF' > electron-builder.json
           {
             "appId": "com.metaai.webbuilder",
-            "productName": "Meta-AI-Builder",
+            "productName": "Meta-AI-Web-Builder",
             "directories": { "output": "release-builds" },
             "files": ["dist/**/*", "electron-main.cjs", "package.json"],
             "npmRebuild": false,
             "nodeGypRebuild": false,
-            "win": { "target": ["portable", "zip"] },
+            "win": { "target": ["portable", "zip"], "cscLink": null },
             "mac": {
-              "target": ["zip", "dmg"],
+              "target": ["zip"],
               "identity": null,
               "hardenedRuntime": false,
               "gatekeeperAssess": false
             },
-            "linux": { "target": ["zip", "tar.gz", "AppImage"] }
+            "linux": { "target": ["zip", "tar.gz"] }
           }
           EOF
 
@@ -97,6 +91,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           WIN_CSC_IDENTITY_AUTO_DISCOVERY: false
           MAC_CSC_IDENTITY_AUTO_DISCOVERY: false
+          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
             npx electron-builder --win --config electron-builder.json
@@ -153,6 +148,8 @@ jobs:
         run: |
           if [ -d "android" ]; then
             cd android
+            export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
+            export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}
             echo "sdk.dir=$ANDROID_HOME" > local.properties
             chmod +x gradlew
             ./gradlew assembleDebug --no-daemon --stacktrace
