@@ -51,7 +51,7 @@ export default function App() {
 
   // Persistence Draft State
   const [savedDrafts, setSavedDrafts] = useState<ProjectDraft[]>([]);
-  const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
+  const [activeDraftId, setActiveDraftId] = useState<string>(() => `draft-${Date.now()}`);
 
   const [isExtModalOpen, setIsExtModalOpen] = useState<boolean>(false);
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState<boolean>(false);
@@ -65,16 +65,12 @@ export default function App() {
     setSavedDrafts(drafts);
   }, []);
 
-  // Auto-Save Active Draft when Key States Change
+  // Auto-Save Active Draft when Key States Change (without triggering state cascades)
   useEffect(() => {
-    let draftId = activeDraftId;
-    if (!draftId) {
-      draftId = `draft-${Date.now()}`;
-      setActiveDraftId(draftId);
-    }
+    if (!activeDraftId) return;
 
     saveProjectDraft({
-      id: draftId,
+      id: activeDraftId,
       title: project?.projectName || selectedStrategy?.name || 'Meta-AI App',
       projectName: project?.projectName || selectedStrategy?.name || 'Meta-AI App',
       updatedAt: Date.now(),
@@ -90,8 +86,6 @@ export default function App() {
       project,
       syncResult,
     });
-
-    setSavedDrafts(loadSavedDrafts());
   }, [
     activeDraftId,
     userPrompt,
@@ -214,7 +208,7 @@ export default function App() {
     deleteProjectDraft(draftId);
     setSavedDrafts(loadSavedDrafts());
     if (activeDraftId === draftId) {
-      setActiveDraftId(null);
+      setActiveDraftId(`draft-${Date.now()}`);
     }
   };
 
@@ -261,7 +255,7 @@ export default function App() {
   };
 
   const handleResetAll = () => {
-    setActiveDraftId(null);
+    setActiveDraftId(`draft-${Date.now()}`);
     setCurrentStage('strategy');
     setCompletedStages({
       prompt: true,
