@@ -80,9 +80,15 @@ jobs:
             "files": ["dist/**/*", "electron-main.cjs", "package.json"],
             "npmRebuild": false,
             "nodeGypRebuild": false,
-            "win": { "target": ["portable", "zip"] },
+            "win": {
+              "target": ["portable", "zip"],
+              "certificateSubjectName": null,
+              "cscLink": null,
+              "verifyUpdateCodeSignature": false
+            },
             "mac": {
               "target": ["dmg", "zip"],
+              "identity": null,
               "hardenedRuntime": false,
               "gatekeeperAssess": false
             },
@@ -102,9 +108,9 @@ jobs:
           GITHUB_TOKEN: ""
         run: |
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            npx electron-builder --win --config electron-builder.json --publish never
+            npx electron-builder --win --config electron-builder.json --publish never -c.win.cscLink=null -c.win.certificateSubjectName=null
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            npx electron-builder --mac --config electron-builder.json --publish never
+            npx electron-builder --mac --config electron-builder.json --publish never -c.mac.identity=null
           else
             npx electron-builder --linux --config electron-builder.json --publish never
           fi
@@ -125,10 +131,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -155,10 +164,6 @@ jobs:
       - name: Compile Android Debug APK
         run: |
           if [ -d "android" ]; then
-            export ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}
-            export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}
-            mkdir -p "$ANDROID_HOME/licenses" || true
-            echo -e "\n89330d222637351194392334f615139e4e79e3a0\nd56f5187479451eabf01fb78af6dfcb131a6481e\n2433080073b369f115597061354d99a7ee16ee18" > "$ANDROID_HOME/licenses/android-sdk-license" || true
             mkdir -p android/capacitor-cordova-android-plugins
             touch android/capacitor-cordova-android-plugins/cordova.variables.gradle
             cd android

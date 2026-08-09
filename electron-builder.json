@@ -12,10 +12,14 @@
   "npmRebuild": false,
   "nodeGypRebuild": false,
   "win": {
-    "target": ["portable", "zip"]
+    "target": ["portable", "zip"],
+    "certificateSubjectName": null,
+    "cscLink": null,
+    "verifyUpdateCodeSignature": false
   },
   "mac": {
     "target": ["dmg", "zip"],
+    "identity": null,
     "hardenedRuntime": false,
     "gatekeeperAssess": false
   },
